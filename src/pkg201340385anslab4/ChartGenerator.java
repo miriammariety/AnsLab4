@@ -19,6 +19,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -47,7 +48,7 @@ public class ChartGenerator {
         JPanel panel = new JPanel();
         panel.setSize(frame.getSize());
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        
+        panel.setBorder(new EmptyBorder(20,20,20,20));
         JButton reportButton = new JButton("Export File as .txt");
         
         
@@ -55,7 +56,7 @@ public class ChartGenerator {
         //CREATE REPORT / EXPORT FILE
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
         Date dateObj = new Date();
-        this.output = "GENERATED REPORT ON" + df.format(dateObj); 
+        this.output = "GENERATED REPORT ON" + df.format(dateObj) +"\n"; 
         this.output += "ID\t\tCount\tStart-End\r\n";
         
         for (ChartPanel chart: charts) {
@@ -83,7 +84,7 @@ public class ChartGenerator {
         frame.pack();
     }
     
-    private void generateReportButtonPerformed(ActionEvent e) {//    String sb = output;
+    private void generateReportButtonPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
         int retrival = chooser.showSaveDialog(this.frame);
         if (retrival == JFileChooser.APPROVE_OPTION) {

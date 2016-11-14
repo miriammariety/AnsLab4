@@ -5,8 +5,6 @@ package pkg201340385anslab4;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,17 +16,18 @@ import org.knowm.xchart.style.markers.None;
 /**
  *
  * @author ty
- * 
+ *
  */
 public class HydrophobicityScale {
+
     private Map<Character, double[]> scale;
     private String[] scaleName;
     private File file;
-    
+
     public HydrophobicityScale() {
         this.initialize();
     }
-    
+
     private void initialize() {
         scale = new HashMap<>();
         scale.put('A', new double[]{1.8, -0.5, 0.2, 0.62, 0.74, 0.3, 1.6});
@@ -51,10 +50,10 @@ public class HydrophobicityScale {
         scale.put('V', new double[]{4.2, -1.5, 4.7, 1.08, 0.86, 0.6, 2.6});
         scale.put('W', new double[]{-0.9, -3.4, 1, 0.81, 0.85, 0.3, 1.9});
         scale.put('Y', new double[]{-1.3, -2.3, 3.2, 0.26, 0.76, -0.4, -0.7});
-        setScaleName(new String[]{"Kyle-Doolitle", "Hopp-Woods", "Cornette", 
+        setScaleName(new String[]{"Kyle-Doolitle", "Hopp-Woods", "Cornette",
             "Eisenberg", "Rose", "Janin", "Engelman GES"});
     }
-        
+
     /**
      * @param sni index of scale to be used
      * @param sw sliding window length
@@ -62,7 +61,7 @@ public class HydrophobicityScale {
      * @return hydrophobicity scale
      */
     public double[] getHydrophobicity(int sni, int sw, String sequence) {
-        int diff = (sw/2)*2;
+        int diff = (sw / 2) * 2;
         double[] hydrophobicity = new double[sequence.length() - diff];
         /*
         for (int i = sw/2; i <= hydrophobicity.length - sw + 1; i++) {
@@ -71,43 +70,41 @@ public class HydrophobicityScale {
                 u += this.scale.get(sequence.charAt(j))[sni];
             hydrophobicity[i] = u/sw;
         }
-        */
+         */
         for (int i = 0; i < hydrophobicity.length; i++) {
             double u = 0.0;
             for (int j = i, ctr = 0; ctr < sw; j++, ctr++) {
                 u += this.scale.get(sequence.charAt(j))[sni];
             }
-            hydrophobicity[i] = u/sw;
+            hydrophobicity[i] = u / sw;
         }
-        
+
         return hydrophobicity;
     }
 
-   public void generatePlot(int sni, int sw, double threshold, 
+    public void generatePlot(int sni, int sw, double threshold,
             ArrayList<ProteinSequence> fastaInput) {
         ArrayList<ChartPanel> cplist = new ArrayList<>();
-       
+
         for (ProteinSequence prot : fastaInput) {
             ArrayList<Integer> starts = new ArrayList<>(0);
             ArrayList<Integer> ends = new ArrayList<>(0);
-            if (prot.comment == null) {
-                cplist.add( new ChartPanel("ERROR MESSAGE: " +"\n\t\t"
-                        + " NOT FASTA FORMAT"));
-            }
-            else if (prot.comment !=null && prot.sequence.isEmpty()) {
-                cplist.add(new ChartPanel("ERROR MESSAGE: " +prot.getID() + "\n\t\t"
-                        + " is NOT FASTA FORMAT"));
-            }
-            else if (sw > prot.sequence.length()) {
-                cplist.add(new ChartPanel("ERROR MESSAGE: " +prot.getID() + "\n\t\t"
-                        + " Sliding Window Length is invalid. Should be greater than sequence length"));
             
-            } 
-            else if (!prot.isProtein()) {
-                cplist.add(new ChartPanel("ERROR MESSAGE: " +prot.getID() + "\n\t\t"
+            if (prot.comment == null) {
+                cplist.add(new ChartPanel("ERROR MESSAGE: " + "\t"
+                        + "NOT FASTA FORMAT"));
+            } else if (prot.comment != null && prot.sequence.isEmpty()) {
+                cplist.add(new ChartPanel("ERROR MESSAGE: Protein ID " + prot.getID() + "\t"
+                        + " is NOT FASTA FORMAT"));
+            } else if (sw > prot.sequence.length()) {
+                cplist.add(new ChartPanel("ERROR MESSAGE: Protein ID " + prot.getID() + "\t"
+                        + " Sliding Window Length is invalid. Should be greater than sequence length"));
+
+            } else if (!prot.isProtein()) {
+                cplist.add(new ChartPanel("ERROR MESSAGE: Protein ID " + prot.getID() + "\t"
                         + " (Input) is not protein"));
-            }
-            else {
+            } else {
+                //Correct Inputs
                 XYChart chart = new XYChartBuilder().width(700).height(700).
                         title("Hydrophobicity plot for " + prot.comment).
                         xAxisTitle("Index position").
@@ -118,7 +115,7 @@ public class HydrophobicityScale {
                     indexPosition[k] = k + 1;
                 }
                 double[] thresholdValue = new double[indexPosition.length];
-                for (int j=  0; j < thresholdValue.length; j++) {
+                for (int j = 0; j < thresholdValue.length; j++) {
                     thresholdValue[j] = threshold;
                 }
                 double[] avgHydrophobicity = this.getHydrophobicity(
@@ -133,7 +130,7 @@ public class HydrophobicityScale {
                     chart.addSeries(prot.getID() + "", indices, avgHydrophobicity);
                 }
                 chart.addSeries("Threshold", indexPosition, thresholdValue).setMarker(new None());
-                // add line
+                
                 double max = this.getMax(avgHydrophobicity);
                 for (int j = 0, trendCount = 0; j < avgHydrophobicity.length - 3; j++) {
                     ArrayList<Double> trendX = new ArrayList<>();
@@ -141,23 +138,24 @@ public class HydrophobicityScale {
                         j = k;
                         if (avgHydrophobicity[j] > threshold) {
                             trendX.add(indices[j]);
-                        } else
+                        } else {
                             break;
+                        }
                     }
                     if (trendX.size() >= sw) {
                         ArrayList<Double> trendY = new ArrayList<>();
                         for (int k = 0; k < trendX.size(); k++) {
                             trendY.add(max + 0.5);
                         }
-                        chart.addSeries("Trend #" + ++trendCount + " > " +(trendX.get(0).intValue() + 1) + " - " + (trendX.get(trendX.size()-1).intValue() + 1), 
-                                trendX, trendY).setMarker(new None());
+                        chart.addSeries("Trend #" + ++trendCount + " > " + (trendX.get(0).intValue() + 1) + " - " + (trendX.get(trendX.size() - 1).intValue() + 1),
+                                        trendX, trendY).setMarker(new None());
                         starts.add(trendX.get(0).intValue());
                         ends.add(trendX.get(trendX.size() - 1).intValue());
                     }
                 }
                 cplist.add(new ChartPanel(chart, starts, ends, prot.getID()));
             }
-        } // END FOR
+        } 
 
         ChartGenerator cg = new ChartGenerator(cplist);
     }
@@ -165,12 +163,13 @@ public class HydrophobicityScale {
     private double getMax(double[] array) {
         double max = Double.MIN_VALUE;
         for (int i = 0; i < array.length; i++) {
-            if (max < array[i])
+            if (max < array[i]) {
                 max = array[i];
+            }
         }
         return max;
     }
-    
+
     public File getFile() {
         return file;
     }

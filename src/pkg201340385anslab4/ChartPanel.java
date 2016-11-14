@@ -6,7 +6,6 @@ package pkg201340385anslab4;
  * and open the template in the editor.
  */
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +22,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import static org.knowm.xchart.BitmapEncoder.getBufferedImage;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
@@ -43,16 +43,18 @@ public class ChartPanel {
     // private JButton backButton;
 
     public ChartPanel(String exception) {
-        panel = new JPanel();
-        JLabel label = new JLabel(exception, SwingConstants.CENTER);
-        this.panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-        label.setForeground(Color.BLACK);
-        label.setFont(new Font("SERIF", Font.BOLD, 24));
-        
-
-        panel.add(label);
         this.exception = exception;
+        
+        panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        JLabel label = new JLabel(exception);
+        label.setForeground(Color.DARK_GRAY);
+        label.setFont(new Font("ARIAL", Font.BOLD, 18));
+        
+        panel.add(label);
+        
     }
 
     public ChartPanel(XYChart chart) {
@@ -89,6 +91,7 @@ public class ChartPanel {
 
         this.panel = new JPanel();
         this.panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        this.panel.setBorder(new EmptyBorder(10, 10, 10, 10));
         this.panel.add(new XChartPanel(chart));
         this.panel.add(saveAsPng);
     }
