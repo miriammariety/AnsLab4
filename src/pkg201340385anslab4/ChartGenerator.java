@@ -56,7 +56,7 @@ public class ChartGenerator {
         //CREATE REPORT / EXPORT FILE
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
         Date dateObj = new Date();
-        this.output = "GENERATED REPORT ON " + df.format(dateObj) +"\n\n======================================"; 
+        this.output = "GENERATED REPORT ON " + df.format(dateObj) +"\n======================================\n"; 
         this.output += "ID\t\tCount\tStart-End\r\n";
         
         for (ChartPanel chart: charts) {

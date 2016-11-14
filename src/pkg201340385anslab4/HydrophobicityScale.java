@@ -106,7 +106,7 @@ public class HydrophobicityScale {
             } else {
                 //Correct Inputs
                 XYChart chart = new XYChartBuilder().width(700).height(700).
-                        title("Hydrophobicity plot for " + prot.comment).
+                        title("Protein ID " + prot.comment + " Hydrophobicity Plot" ).
                         xAxisTitle("Index position").
                         yAxisTitle("Average Hydrophobicity").
                         build();
